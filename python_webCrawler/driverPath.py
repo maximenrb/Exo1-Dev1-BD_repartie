@@ -10,7 +10,8 @@ absolute_path = absolute_path.replace("\\", "/")
 #
 # Change to '/driver/geckodriver.exe' if you want to use Firefox
 DRIVER_PATH = absolute_path + '/driver/chromedriver.exe'
-
+#DRIVER_PATH = absolute_path + '/driver/geckodriver.exe'
+#DRIVER_PATH = absolute_path + '/driver/chromedriver-83.0.4103.39-linux'
 
 def get_driver():
     # Change to '.Firefox()' if you use Firefox
