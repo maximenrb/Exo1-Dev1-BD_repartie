@@ -11,13 +11,19 @@ from python_webCrawler.driverPath import get_driver
 webDriver = get_driver()
 
 
-def add_url_in_file(text):
-    file_path = "data/url_short"
-
+def add_in_file(text, path):
     # Open a file with access mode 'a'
-    with open(file_path, "a") as file_object:
+    with open(path, "a") as file_object:
         # Append text at the end of file
         file_object.write(text + '\n')
+
+
+def add_url_in_file(text):
+    add_in_file(text, "data/url_short")
+
+
+def add_name_in_file(text):
+    add_in_file(text, "data/name")
 
 
 def home_crawler():
@@ -39,10 +45,11 @@ def home_crawler():
             print(link)
 
             # Remove redundant part of link
-            link = link[link.find("=")+1:]
+            short_link = link[link.find("=")+1:]
 
             # Save links in file
-            add_url_in_file(link)
+            add_url_in_file(short_link)
+            add_name_in_file(spell.text)
 
 
 def crawler():
