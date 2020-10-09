@@ -4,7 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
 
-from spellObject import SpellObject
+from python_webCrawler.spellObject import SpellObject
 
 # Set directory of web driver
 DRIVER_PATH = 'C:/Users/maxna/Desktop/chromedriver.exe'
@@ -48,7 +48,7 @@ def home_crawler():
 
 
 def crawler():
-    with open('Data/url_short') as f:
+    with open('python_webCrawler/Data/url_short') as f:
         lines = f.read().splitlines()
 
     nb_links = len(lines)

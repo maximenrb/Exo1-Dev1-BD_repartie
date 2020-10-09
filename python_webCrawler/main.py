@@ -1,6 +1,4 @@
-from spellCrawler import crawler
-from spellCrawler import home_crawler
-
+from python_webCrawler.spellCrawler import crawler
 
 crawler()
 
