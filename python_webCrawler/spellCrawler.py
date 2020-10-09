@@ -5,9 +5,10 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
 
 from python_webCrawler.spellObject import SpellObject
+from python_webCrawler.driverPath import get_driver_path
 
 # Set directory of web driver
-DRIVER_PATH = 'C:/Users/maxna/Desktop/chromedriver.exe'
+DRIVER_PATH = get_driver_path()
 
 # Initiate web driver
 webDriver = webdriver.Chrome(executable_path=DRIVER_PATH)
