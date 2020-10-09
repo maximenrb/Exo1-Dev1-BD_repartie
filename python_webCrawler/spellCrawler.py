@@ -1,17 +1,14 @@
 # Must install selenium package
-from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
 
 from python_webCrawler.spellObject import SpellObject
-from python_webCrawler.driverPath import get_driver_path
+from python_webCrawler.driverPath import get_driver
 
-# Set directory of web driver
-DRIVER_PATH = get_driver_path()
 
 # Initiate web driver
-webDriver = webdriver.Chrome(executable_path=DRIVER_PATH)
+webDriver = get_driver()
 
 
 def add_url_in_file(text):
