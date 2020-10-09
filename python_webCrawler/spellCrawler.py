@@ -7,7 +7,7 @@ from selenium.webdriver.common.by import By
 from python_webCrawler.spellObject import SpellObject
 
 # Set directory of web driver
-DRIVER_PATH = 'C:/Users/maxna/Desktop/chromedriver.exe'
+DRIVER_PATH = 'geckodriver.exe'
 
 # Initiate web driver
 webDriver = webdriver.Chrome(executable_path=DRIVER_PATH)
