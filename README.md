@@ -1,4 +1,3 @@
-
 # 8INF803 Bases de données réparties  Automne 2020
 ## Devoir 1 - 30% de la note finale.
 Professeur: Edmond La Chance
@@ -13,7 +12,6 @@ Date de remise : Lundi 19 Octobre 2020
 * Équipes : 1 à 4 personnes
 
 ## Résumé et mise à jour du devoir
-
 Vous devez aller chercher les données sur les sorts (spells) en programmant un crawler dans le langage de votre choix.
 Votre crawler doit ensuite envoyer les données dans une BD répartie. Vous pouvez utiliser MongoDB. MongoDB fonctionne avec des collections d’objets JSON. Donc, votre crawler peut par exemple produire un fichier JSON. Ce dernier est ensuite chargé dans une collection mongodb avec l’outil mongoimport ou alors vous pouvez le faire complètement côté code.
 
@@ -28,7 +26,6 @@ Votre graphe peut être encodé avec un RDD de sommets. Voici une manière possi
 case class sommet(pagerank : Double, adjlist : Array[Int])
 
 ## Exercice 1 : Le sort du dernier recours
-
 ### Mise en situation
  Vous êtes un cuisinier appelé Pito, ex-magicien, sorcier, et propriétaire de votre propre restaurant appelé “Les pain pitas garnis de Pito”. Votre restaurant est situé sur le chemin de la forêt DragonWood,  une forêt peuplée par des elfes sylvains et également domicile à un puissant dragon vert.
 Vous avez choisi un endroit magnifique pour y établir votre restaurant. Par contre, il y a peu de passage et les elfes ne sont pas trop fan de la cuisine.
@@ -42,7 +39,6 @@ Pito va brûler vivant s’il ne trouve pas une solution.  Il n’a pas la force
 Votre tâche est de trouver un sort qui peut tirer Pito d’affaire (avec la programmation). Pito est capable de lancer des sorts de maximum niveau 4. Outre trouver un sort, vous devez accomplir les énoncés suivants.
 
 ### 1. Crawler
-
 Vous devez utiliser le langage de votre choix (C++, Scala, JS, Java, Python) pour télécharger tous les sorts. Voici quelques sites qui donnent une telle liste (voir plus bas).
 Téléchargez tous les sorts, et ensuite faites le tri avec du code MapReduce (ou un filter sur MongoDB ou Spark) pour ne garder que les sorts <=4 de Wizard avec composante verbale seulement.
 
@@ -51,7 +47,7 @@ Vous devez insérer les sorts dans une collection MongoDB ou alors insérer les 
 Voici un exemple de JSON inséré. Vous devez utiliser le même schéma au minimum. Pour le niveau du sort, il peut varier. Prenez n’importe lequel. Si c’est un sort du Wizard, prenez le level du sort pour le Wizard.
 
 (Si un sort n’a pas de spell resistance, par exemple celui-ci, mettre la spell resistance à false)
-**
+
 {
   "name": "Acid Arrow",
   "level": “bloodrager 2, magus 2, sorcerer/wizard 2”
@@ -79,16 +75,15 @@ Voir aussi ces outils :
 
 * http://www.d20pfsrd.com/magic/tools/advanced-spell-search/ (Un exemple d’application pour chercher dans les spells)
 * http://regexr.com/   (Si vous utilisez des regex)
-* https://stackoverflow.com/questions/7772605/get-url-contents-in-node-js-with-express
-* (Pour naviguer dans le html sans avoir besoin de regex ou code spécial) https://www.npmjs.com/package/jssoup
+* https://stackoverflow.com/questions/7772605/get-url-contents-in-node-js-with-express (Pour naviguer dans le html sans avoir besoin de regex ou code spécial)
+* https://www.npmjs.com/package/jssoup
 
 ### 2. Trouver le/un sort qui libère Pito
-
 Il faut que ça soit un sort de Wizard, verbal seulement (V), maximum niveau 4. Exemple de sort verbal seulement : Holy Word (voir plus bas).
 
 Vous devez écrire un code en MapReduce qui génère la liste des sorts valables.
-Exemple de code :
-https://gist.github.com/mitchi/18a9ad3aaf084823a97807f8eeb89a7c
+
+Exemple de code : https://gist.github.com/mitchi/18a9ad3aaf084823a97807f8eeb89a7c
 
 ### 3. Vous devez également envoyer les données dans une BD SQlite
 Créez un schéma avec une table qui a a peu près la même structure que votre JSON.
@@ -103,7 +98,6 @@ Créez un schéma avec une table qui a a peu près la même structure que votre 
 Ensuite, vous devez écrire une requête SQL qui va produire la même liste de spells qu’à l’énoncé 2.
 
 ## Exercice 2 : Calculer le pagerank avec plusieurs itérations MapReduce.
-
 Cet exercice est beaucoup plus classique. Vous devez coder l’algorithme du PageRank avec MapReduce (MongoDB) ou en utilisant Apache Spark (Scala, Python ou Java).
 
 Les données des spells du Wizard ne sont pas assez interconnectées pour mériter de faire un PageRank. Nous allons donc prendre un graphe beaucoup plus simple.
@@ -122,8 +116,6 @@ Liens pertinents :
 * http://hadooptutorial.info/mapreduce-use-case-to-calculate-pagerank/
 
 Faites attention, il faut qu’il y ait 2 valeurs dans le tableau des valeurs pour que le reducer d’une clé soit appelé.
-
-Après 20 itérations, vous aurez les résultats suivants. Le Damping Factor utilisé est 0.85.
 
 ## Authors
 * [maximenrb](https://github.com/maximenrb)
