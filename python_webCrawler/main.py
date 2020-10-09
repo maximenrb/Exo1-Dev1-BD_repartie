@@ -1,10 +1,6 @@
 from spellCrawler import crawler
 from spellCrawler import home_crawler
 
-# Must install 'progress' package
-import time
-import sys
-
 
 crawler()
 
