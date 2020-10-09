@@ -46,7 +46,7 @@ def home_crawler():
 
 
 def crawler():
-    with open('python_webCrawler/Data/url_short') as f:
+    with open('data/url_short') as f:
         lines = f.read().splitlines()
 
     nb_links = len(lines)
