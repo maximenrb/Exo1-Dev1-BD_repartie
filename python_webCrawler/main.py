@@ -4,9 +4,11 @@ from python_webCrawler.spellCrawler import mono_thread_crawler
 from python_webCrawler.spellCrawler import home_crawler
 from time import time
 
-start = time()
+
 if __name__ == '__main__':
+    start = time()
+
     mono_thread_crawler()
 
-end = time()
-print(str(end - start) + " s")
+    end = time()
+    print(str(end - start) + " s")
