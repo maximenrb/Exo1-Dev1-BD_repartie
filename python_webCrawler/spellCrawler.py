@@ -73,8 +73,6 @@ def crawler(url_list, name_list):
 
     nb_links = len(url_list)
 
-    spells = []
-
     for actual_link in range(0, nb_links):
         # Go to web page
         # TODO Add wait
@@ -119,6 +117,11 @@ def crawler(url_list, name_list):
 
                         components_list[i] = str(components_list[i]).strip()
 
+                        # Remove useless components for page like :
+                        #   https://aonprd.com/SpellDisplay.aspx?ItemName=Memory%20of%20Function
+                        if not str(components_list[i]).isupper():
+                            components_list.remove(components_list[i])
+
                 spell_resistance = False
 
                 if not span_div_html.find("Spell Resistance", start_index_find,
@@ -129,7 +132,7 @@ def crawler(url_list, name_list):
                     string_spell_resistance = str(span_div_html[spell_resistance_pos:h3_pos])
 
                     if string_spell_resistance.find("(") > 0:
-                        spell_resistance = string_spell_resistance[:string_spell_resistance.find("(")]
+                        string_spell_resistance = string_spell_resistance[:string_spell_resistance.find("(")]
 
                     if string_spell_resistance.lower().find("no") > 0:
                         spell_resistance = False
@@ -143,9 +146,7 @@ def crawler(url_list, name_list):
                 # add_spell_resistance_in_file(str(spell_resistance))
 
                 print("Name: ", name_list[actual_link], " | Level: ", wizard_level, " | Components: ", components_list,
-                      " | Spell Resistance: ", spell_resistance, " | ", actual_link, "/", nb_links)
-
-    print(spells)
+                      " | Spell Resistance: ", spell_resistance, " | ", actual_link, "/", nb_links-1)
 
     # spells2 = webDriver.find_element_by_xpath("//h3[contains(text(),'Casting')]")
     # print(spells2)
@@ -185,6 +186,9 @@ def mono_thread_crawler():
 
     with open('data/name') as f:
         name_list = f.read().splitlines()
+
+    # url_list = ["Memory%20of%20Function"]
+    # name_list = ["Memory of Function"]
 
     crawler(url_list, name_list)
 
