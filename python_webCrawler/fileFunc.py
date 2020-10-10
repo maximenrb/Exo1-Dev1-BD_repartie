@@ -23,3 +23,17 @@ def add_components(text):
 
 def add_spell_resistance(text):
     add(text, "data/spell_resistance")
+
+
+def get_name_list():
+    with open('data/name') as f:
+        name_list = f.read().splitlines()
+
+    return name_list
+
+
+def get_url_list():
+    with open('data/url_short') as f:
+        url_list = f.read().splitlines()
+
+    return url_list
