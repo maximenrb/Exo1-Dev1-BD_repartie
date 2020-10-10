@@ -122,15 +122,17 @@ def crawler(url_list, name_list):
         # Go to web page
         web_driver.get("https://aonprd.com/SpellDisplay.aspx?ItemName=" + url_list[actual_link])
 
-        WebDriverWait(web_driver, 5).until(ec.presence_of_element_located(
-            (By.XPATH, "//span[contains(@id, '_MainContent_DataListTypes_ct')]")))
-
+        # Get all span divs with an id that contain "_MainContent_DataListTypes_ct"
+        # Because content is in "_MainContent_DataListTypes_ct100..." in somme pages, or for instance
+        # in "_MainContent_DataListTypes_ct102..." for other pages
         span_div_list = web_driver.find_elements_by_xpath(
             "//span[contains(@id, '_MainContent_DataListTypes_ct')]")
 
         for span_div in span_div_list:
+            # Get HTML code of retrieved element
             span_div_html = span_div.get_attribute("innerHTML")
 
+            # Detect if span is not empty (present in some pages)
             if not span_div_html == "":
 
                 # Search and use this index because one page can regroup different spells
