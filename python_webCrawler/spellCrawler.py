@@ -1,11 +1,9 @@
 # Must install selenium package
-import threading
-
-from multiprocessing import Process
-
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
+
+import threading
 
 from python_webCrawler import fileFunc
 from python_webCrawler.spellObject import SpellObject
@@ -23,13 +21,14 @@ def home_crawler():
     WebDriverWait(web_driver, 5).until(ec.presence_of_element_located(
         (By.XPATH, "//a[contains(@href,'SpellDisplay')]")))
 
-    # Get all elements with href starting by 'SpellDisplay..."
+    # Get all "a" divs with href field starting by 'SpellDisplay..."
     spells = web_driver.find_elements_by_xpath("//a[contains(@href, 'SpellDisplay')]")
 
     for spell in spells:
         # Remove "M", "FMR" or "V" links
         if len(spell.text) > 2 and not str(spell.text) == "FMR":
 
+            # Get the link of the current div
             link = str(spell.get_attribute("href"))
             print(link)
 
@@ -166,31 +165,3 @@ def mono_thread_crawler():
     # name_list = ["Memory of Function"]
 
     crawler(url_list, name_list)
-
-
-def multi_process_crawler():
-    with open('data/url_short') as f:
-        url_list = f.read().splitlines()
-
-    with open('data/name') as f:
-        name_list = f.read().splitlines()
-
-    nb_process = 4
-
-    div_result = (len(url_list) - 1) // nb_process
-    mod_result = (len(url_list) - 1) % nb_process
-
-    inf = 0
-    sup = div_result
-
-    for i in range(0, nb_process):
-        crawler_process = Process(target=crawler, args=(url_list[inf:sup], name_list[inf:sup]))
-        print("Prepare Process")
-        crawler_process.start()
-        print("Process start for slice:", inf, ":", sup)
-
-        inf = sup + 1
-        sup += div_result
-
-        if i == nb_process - 2:
-            sup += mod_result
