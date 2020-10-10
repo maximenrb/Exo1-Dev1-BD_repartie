@@ -1,40 +1,15 @@
 # Must install selenium package
 import threading
+
 from multiprocessing import Process
 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
 
+from python_webCrawler import fileFunc
 from python_webCrawler.spellObject import SpellObject
 from python_webCrawler.driverPath import get_driver
-
-
-def add_in_file(text, path):
-    # Open a file with access mode 'a'
-    with open(path, "a") as file_object:
-        # Append text at the end of file
-        file_object.write(text + '\n')
-
-
-def add_url_in_file(text):
-    add_in_file(text, "data/url_short")
-
-
-def add_name_in_file(text):
-    add_in_file(text, "data/name")
-
-
-def add_level_in_file(text):
-    add_in_file(text, "data/level")
-
-
-def add_components_in_file(text):
-    add_in_file(text, "data/components")
-
-
-def add_spell_resistance_in_file(text):
-    add_in_file(text, "data/spell_resistance")
 
 
 def home_crawler():
@@ -62,8 +37,8 @@ def home_crawler():
             short_link = link[link.find("=")+1:]
 
             # Save links in file
-            add_url_in_file(short_link)
-            add_name_in_file(spell.text)
+            fileFunc.add_url(short_link)
+            fileFunc.add_name(spell.text)
 
 
 def crawler(url_list, name_list):
@@ -141,9 +116,9 @@ def crawler(url_list, name_list):
 
                 # spells.append(SpellObject(name_list[actual_link], wizard_level, components_list, spell_resistance))
 
-                # add_level_in_file(str(wizard_level))
-                # add_components_in_file(str(components_list).strip('[]'))
-                # add_spell_resistance_in_file(str(spell_resistance))
+                # fileFunc.add_level(str(wizard_level))
+                # fileFunc.add_components(str(components_list).strip('[]'))
+                # fileFunc.add_spell_resistance(str(spell_resistance))
 
                 print("Name: ", name_list[actual_link], " | Level: ", wizard_level, " | Components: ", components_list,
                       " | Spell Resistance: ", spell_resistance, " | ", actual_link, "/", nb_links-1)
