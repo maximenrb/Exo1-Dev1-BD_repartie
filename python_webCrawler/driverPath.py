@@ -33,17 +33,16 @@ def get_driver(user_os='', user_browser=''):
         user_browser = input("> ")
         print("")
 
-    while True:
-        if user_os == "1":
-            if user_browser == "1":
-                return webdriver.Chrome(executable_path=DRIVER_PATH_WINDOWS_CHROME)
+    if user_os == "1":
+        if user_browser == "1":
+            return webdriver.Chrome(executable_path=DRIVER_PATH_WINDOWS_CHROME)
 
-            elif user_browser == "2":
-                return webdriver.Firefox(executable_path=DRIVER_PATH_WINDOWS_FIREFOX)
+        elif user_browser == "2":
+            return webdriver.Firefox(executable_path=DRIVER_PATH_WINDOWS_FIREFOX)
 
-        elif user_os == "2":
-            if user_browser == "1":
-                return webdriver.Chrome(executable_path=DRIVER_PATH_LINUX_CHROME)
+    elif user_os == "2":
+        if user_browser == "1":
+            return webdriver.Chrome(executable_path=DRIVER_PATH_LINUX_CHROME)
 
-            elif user_browser == "2":
-                return webdriver.Firefox(executable_path=DRIVER_PATH_LINUX_FIREFOX)
+        elif user_browser == "2":
+            return webdriver.Firefox(executable_path=DRIVER_PATH_LINUX_FIREFOX)
