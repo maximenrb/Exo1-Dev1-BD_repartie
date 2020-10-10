@@ -1,14 +1,13 @@
 # Must install selenium package
+import threading
+from multiprocessing import Process
+
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
 
 from python_webCrawler.spellObject import SpellObject
 from python_webCrawler.driverPath import get_driver
-
-
-# Initiate web driver
-webDriver = get_driver()
 
 
 def add_in_file(text, path):
@@ -39,19 +38,22 @@ def add_spell_resistance_in_file(text):
 
 
 def home_crawler():
+    # Initiate web driver
+    web_driver = get_driver()
+
     # Go to web page
-    webDriver.get('https://aonprd.com/Spells.aspx?Class=Wizard')
+    web_driver.get('https://aonprd.com/Spells.aspx?Class=Wizard')
 
     # Wait loading of web page elements
-    WebDriverWait(webDriver, 5).until(ec.presence_of_element_located(
+    WebDriverWait(web_driver, 5).until(ec.presence_of_element_located(
         (By.XPATH, "//a[contains(@href,'SpellDisplay')]")))
 
     # Get all elements with href starting by 'SpellDisplay..."
-    spells = webDriver.find_elements_by_xpath("//a[contains(@href, 'SpellDisplay')]")
+    spells = web_driver.find_elements_by_xpath("//a[contains(@href, 'SpellDisplay')]")
 
     for spell in spells:
-        # Remove "M" or "V" links
-        if len(spell.text) > 2:
+        # Remove "M", "FMR" or "V" links
+        if len(spell.text) > 2 and not str(spell.text) == "FMR":
 
             link = str(spell.get_attribute("href"))
             print(link)
@@ -64,12 +66,10 @@ def home_crawler():
             add_name_in_file(spell.text)
 
 
-def crawler():
-    with open('data/url_short') as f:
-        url_list = f.read().splitlines()
-
-    with open('data/name') as f:
-        name_list = f.read().splitlines()
+def crawler(url_list, name_list):
+    # Initiate web driver
+    # You can define values for multithreading like get_driver("1", "1") for chrome Windows driver
+    web_driver = get_driver()
 
     nb_links = len(url_list)
 
@@ -78,12 +78,12 @@ def crawler():
     for actual_link in range(0, nb_links):
         # Go to web page
         # TODO Add wait
-        webDriver.get("https://aonprd.com/SpellDisplay.aspx?ItemName=" + url_list[actual_link])
+        web_driver.get("https://aonprd.com/SpellDisplay.aspx?ItemName=" + url_list[actual_link])
 
-        WebDriverWait(webDriver, 5).until(ec.presence_of_element_located(
+        WebDriverWait(web_driver, 5).until(ec.presence_of_element_located(
             (By.XPATH, "//span[contains(@id, '_MainContent_DataListTypes_ct')]")))
 
-        span_div_list = webDriver.find_elements_by_xpath(
+        span_div_list = web_driver.find_elements_by_xpath(
             "//span[contains(@id, '_MainContent_DataListTypes_ct')]")
 
         for span_div in span_div_list:
@@ -138,9 +138,9 @@ def crawler():
 
                 # spells.append(SpellObject(name_list[actual_link], wizard_level, components_list, spell_resistance))
 
-                add_level_in_file(str(wizard_level))
-                add_components_in_file(str(components_list).strip('[]'))
-                add_spell_resistance_in_file(str(spell_resistance))
+                # add_level_in_file(str(wizard_level))
+                # add_components_in_file(str(components_list).strip('[]'))
+                # add_spell_resistance_in_file(str(spell_resistance))
 
                 print("Name: ", name_list[actual_link], " | Level: ", wizard_level, " | Components: ", components_list,
                       " | Spell Resistance: ", spell_resistance, " | ", actual_link, "/", nb_links)
@@ -149,3 +149,69 @@ def crawler():
 
     # spells2 = webDriver.find_element_by_xpath("//h3[contains(text(),'Casting')]")
     # print(spells2)
+
+
+def multi_thread_crawler():
+    with open('data/url_short') as f:
+        url_list = f.read().splitlines()
+
+    with open('data/name') as f:
+        name_list = f.read().splitlines()
+
+    nb_thread = 4
+
+    div_result = (len(url_list) - 1) // nb_thread
+    mod_result = (len(url_list) - 1) % nb_thread
+
+    inf = 0
+    sup = div_result
+
+    for i in range(0, nb_thread):
+        crawler_thread = threading.Thread(target=crawler, args=(url_list[inf:sup], name_list[inf:sup]))
+        print("Prepare thread")
+        crawler_thread.start()
+        print("Thread start for slice:", inf, ":", sup)
+
+        inf = sup + 1
+        sup += div_result
+
+        if i == nb_thread - 2:
+            sup += mod_result
+
+
+def mono_thread_crawler():
+    with open('data/url_short') as f:
+        url_list = f.read().splitlines()
+
+    with open('data/name') as f:
+        name_list = f.read().splitlines()
+
+    crawler(url_list, name_list)
+
+
+def multi_process_crawler():
+    with open('data/url_short') as f:
+        url_list = f.read().splitlines()
+
+    with open('data/name') as f:
+        name_list = f.read().splitlines()
+
+    nb_process = 4
+
+    div_result = (len(url_list) - 1) // nb_process
+    mod_result = (len(url_list) - 1) % nb_process
+
+    inf = 0
+    sup = div_result
+
+    for i in range(0, nb_process):
+        crawler_process = Process(target=crawler, args=(url_list[inf:sup], name_list[inf:sup]))
+        print("Prepare Process")
+        crawler_process.start()
+        print("Process start for slice:", inf, ":", sup)
+
+        inf = sup + 1
+        sup += div_result
+
+        if i == nb_process - 2:
+            sup += mod_result

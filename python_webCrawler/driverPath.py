@@ -14,11 +14,8 @@ DRIVER_PATH_LINUX_CHROME = absolute_path + '/driver/chromedriver-83.0.4103.39-li
 DRIVER_PATH_LINUX_FIREFOX = absolute_path + '/driver/geckodriver-v0.26-linux'
 
 
-def get_driver():
+def get_driver(user_os='', user_browser=''):
     # See more : https://www.selenium.dev/documentation/fr/webdriver/driver_requirements/
-
-    user_os = ""
-    user_browser = ""
 
     while not user_os == "1" and not user_os == "2":
         print("Choose your OS:")
@@ -48,5 +45,5 @@ def get_driver():
             if user_browser == "1":
                 return webdriver.Chrome(executable_path=DRIVER_PATH_LINUX_CHROME)
 
-            elif user_browser == 2:
+            elif user_browser == "2":
                 return webdriver.Firefox(executable_path=DRIVER_PATH_LINUX_FIREFOX)
