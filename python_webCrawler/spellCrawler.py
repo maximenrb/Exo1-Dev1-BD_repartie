@@ -113,7 +113,7 @@ def get_spell_resistance(span_div_html, start_find_index):
 
 def crawler(url_list, name_list):
     # Initiate web driver
-    # You can define values for multithreading automatising, like get_driver("1", "1") for chrome Windows driver
+    # You can define values for multithreading automatising, like get_driver("1") for Chrome driver
     web_driver = get_driver()
 
     nb_links = len(url_list)
