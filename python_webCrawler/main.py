@@ -11,4 +11,5 @@ if __name__ == '__main__':
     multi_thread_crawler()
 
     end = time()
-    print(str(end - start) + " s")
+    print("")
+    print("Execution time: " + str(end - start) + " s")

@@ -1,5 +1,4 @@
 # Must install selenium package
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
 
@@ -168,11 +167,12 @@ def multi_thread_crawler(nb_thread=4):
     for i in range(0, nb_thread):
         crawler_thread = threading.Thread(target=crawler,
                                           args=(url_list[inf:sup], name_list[inf:sup], get_driver(browser)))
-        print("Thread prepared")
+        print("Thread " + str(i+1) + " is ready")
         threads_list.append(crawler_thread)
 
         crawler_thread.start()
-        print("Thread started for slice:", inf, ":", sup)
+        print("Thread " + str(i+1) + " started for range from ", inf, " to ", sup)
+        print("")
 
         inf = sup + 1
         sup += div_result
@@ -184,4 +184,5 @@ def multi_thread_crawler(nb_thread=4):
         # Wait until thread terminates its task
         thread.join()
 
+    print("")
     print("All threads completed")
