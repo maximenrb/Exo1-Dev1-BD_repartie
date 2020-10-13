@@ -33,8 +33,6 @@ def get_driver(user_browser):
 
     # https://stackoverflow.com/questions/1854/python-what-os-am-i-running-on
     user_os = platform.system()
-    print("You are running on " + user_os + " " + platform.release())
-    print("")
 
     if user_browser == "1":
         chrome_opt = webdriver.ChromeOptions()
@@ -66,6 +64,7 @@ def get_driver(user_browser):
 def get_browser():
     user_browser = ""
 
+    print("You are running on " + platform.system() + " " + platform.release())
     while not user_browser == "1" and not user_browser == "2":
         print("Choose your browser:")
         print("  1. Chrome")
