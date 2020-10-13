@@ -163,11 +163,13 @@ def multi_thread_crawler(nb_thread=4):
     sup = div_result
 
     browser = get_browser()
+    threads_list = []
 
     for i in range(0, nb_thread):
         crawler_thread = threading.Thread(target=crawler,
                                           args=(url_list[inf:sup], name_list[inf:sup], get_driver(browser)))
         print("Thread prepared")
+        threads_list.append(crawler_thread)
 
         crawler_thread.start()
         print("Thread started for slice:", inf, ":", sup)
@@ -177,3 +179,9 @@ def multi_thread_crawler(nb_thread=4):
 
         if i == nb_thread - 2:
             sup += mod_result
+
+    for thread in threads_list:
+        # Wait until thread terminates its task
+        thread.join()
+
+    print("All threads completed")
