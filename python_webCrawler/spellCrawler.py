@@ -17,10 +17,6 @@ def home_crawler():
     # Go to web page
     web_driver.get('https://aonprd.com/Spells.aspx?Class=Wizard')
 
-    # Wait loading of web page elements
-    WebDriverWait(web_driver, 5).until(ec.presence_of_element_located(
-        (By.XPATH, "//a[contains(@href,'SpellDisplay')]")))
-
     # Get all "a" divs with href field starting by 'SpellDisplay..."
     spells = web_driver.find_elements_by_xpath("//a[contains(@href, 'SpellDisplay')]")
 
@@ -36,8 +32,8 @@ def home_crawler():
             short_link = link[link.find("=")+1:]
 
             # Save links in file
-            fileFunc.add_url(short_link)
-            fileFunc.add_name(spell.text)
+            # fileFunc.add_url(short_link)
+            # fileFunc.add_name(spell.text)
 
 
 def get_level(span_div_html, start_find_index):
