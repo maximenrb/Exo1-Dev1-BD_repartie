@@ -13,7 +13,8 @@ from python_webCrawler.driverPath import get_browser
 
 def home_crawler():
     # Initiate web driver
-    web_driver = get_driver()
+    browser = get_browser()
+    web_driver = get_driver(browser)
 
     # Go to web page
     web_driver.get('https://aonprd.com/Spells.aspx?Class=Wizard')
