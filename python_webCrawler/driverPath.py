@@ -28,21 +28,13 @@ def driver_path(driver_type):
         return absolute_path + '/driver/geckodriver-v0.26-linux'
 
 
-def get_driver(user_browser=''):
+def get_driver(user_browser):
     # See more : https://www.selenium.dev/documentation/fr/webdriver/driver_requirements/
 
     # https://stackoverflow.com/questions/1854/python-what-os-am-i-running-on
     user_os = platform.system()
     print("You are running on " + user_os + " " + platform.release())
     print("")
-
-    while not user_browser == "1" and not user_browser == "2":
-        print("Choose your browser:")
-        print("  1. Chrome")
-        print("  2. Firefox")
-
-        user_browser = input("> ")
-        print("")
 
     if user_browser == "1":
         chrome_opt = webdriver.ChromeOptions()
@@ -69,3 +61,17 @@ def get_driver(user_browser=''):
     else:
         print("Your platform is not currently supported.")
         sys.exit(1)
+
+
+def get_browser():
+    user_browser = ""
+
+    while not user_browser == "1" and not user_browser == "2":
+        print("Choose your browser:")
+        print("  1. Chrome")
+        print("  2. Firefox")
+
+        user_browser = input("> ")
+        print("")
+
+    return user_browser

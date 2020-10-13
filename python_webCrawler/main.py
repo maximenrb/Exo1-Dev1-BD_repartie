@@ -8,7 +8,7 @@ from time import time
 if __name__ == '__main__':
     start = time()
 
-    mono_thread_crawler()
+    multi_thread_crawler()
 
     end = time()
     print(str(end - start) + " s")

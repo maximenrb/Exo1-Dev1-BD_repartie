@@ -8,6 +8,7 @@ import threading
 from python_webCrawler import fileFunc
 from python_webCrawler.spellObject import SpellObject
 from python_webCrawler.driverPath import get_driver
+from python_webCrawler.driverPath import get_browser
 
 
 def home_crawler():
@@ -107,11 +108,7 @@ def get_spell_resistance(span_div_html, start_find_index):
     return spell_resistance
 
 
-def crawler(url_list, name_list):
-    # Initiate web driver
-    # You can define values for multithreading automatising, like get_driver("1") for Chrome driver
-    web_driver = get_driver()
-
+def crawler(url_list, name_list, web_driver):
     nb_links = len(url_list)
 
     for actual_link in range(0, nb_links):
@@ -149,7 +146,9 @@ def crawler(url_list, name_list):
 
 
 def mono_thread_crawler():
-    crawler(fileFunc.get_url_list(), fileFunc.get_name_list())
+    browser = get_browser()
+
+    crawler(fileFunc.get_url_list(), fileFunc.get_name_list(), get_driver(browser))
 
 
 def multi_thread_crawler(nb_thread=4):
@@ -162,8 +161,11 @@ def multi_thread_crawler(nb_thread=4):
     inf = 0
     sup = div_result
 
+    browser = get_browser()
+
     for i in range(0, nb_thread):
-        crawler_thread = threading.Thread(target=crawler, args=(url_list[inf:sup], name_list[inf:sup]))
+        crawler_thread = threading.Thread(target=crawler,
+                                          args=(url_list[inf:sup], name_list[inf:sup], get_driver(browser)))
         print("Thread prepared")
 
         crawler_thread.start()
