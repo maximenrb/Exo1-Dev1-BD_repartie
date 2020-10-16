@@ -3,9 +3,9 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
 
 import threading
+import os.path
 
 from python_webCrawler import fileFunc
-from python_webCrawler.spellObject import SpellObject
 from python_webCrawler.driverPath import get_driver
 from python_webCrawler.driverPath import get_browser
 
@@ -13,9 +13,15 @@ from python_webCrawler.driverPath import get_browser
 global_lock = threading.Lock()
 
 
-def home_crawler():
+def home_crawler(browser):
+    if os.path.isfile("data/all_name") or os.path.isfile("data/all_url_short"):
+        print("Home crawler already done !")
+        print("Remove \'data/all_name\' AND \'data/all_url_short\' to re-download all links from home page")
+        print("")
+
+        return
+
     # Initiate web driver
-    browser = get_browser()
     web_driver = get_driver(browser)
 
     # Go to web page
@@ -39,12 +45,14 @@ def home_crawler():
             fileFunc.add_url(short_link)
             fileFunc.add_name(spell.text)
 
+    web_driver.close()
+
 
 def get_level(span_div_html, start_find_index):
     level = ""
 
     # Get information from div
-    level_pos = span_div_html.find("<b>Level</b>", start_find_index)
+    level_pos = span_div_html.find("<b>Level</b>", start_find_index, span_div_html.find("Casting", start_find_index))
 
     if level_pos > 0:
         level_pos += 12
@@ -154,10 +162,10 @@ def crawler(url_list, name_list, web_driver):
 
                 global_lock.acquire()
 
-                # fileFunc.add_level(str(level))
-                # fileFunc.add_components(str(components_list).strip('[]'))
-                # fileFunc.add_spell_resistance(str(spell_resistance))
-                fileFunc.add_json(name_list[actual_link], level, components_list, spell_resistance)
+                fileFunc.add_name_for_json(name_list[actual_link])
+                fileFunc.add_level(str(level))
+                fileFunc.add_components(str(components_list).strip('[]'))
+                fileFunc.add_spell_resistance(str(spell_resistance))
 
                 print("Name: ", name_list[actual_link], " | Level: ", level, " | Components: ", components_list,
                       " | Spell Resistance: ", spell_resistance, " | ", actual_link, "/", nb_links-1)
@@ -165,13 +173,56 @@ def crawler(url_list, name_list, web_driver):
                 global_lock.release()
 
 
-def mono_thread_crawler():
-    browser = get_browser()
+def put_spells_in_json():
+    if os.path.isfile("data/spells.json"):
+        print("JSON already generated !")
+        print("Remove : \'data/spells.json\' to re-generate JSON")
+        print()
+
+        return
+
+    name_list = fileFunc.get_name_list()
+    level_list = fileFunc.get_level_list()
+    components_list = fileFunc.get_components_list()
+    spell_resistance_list = fileFunc.get_spell_resistance_list()
+
+    fileFunc.add_with_line_feed("[", 'data/spells.json')
+
+    for elm in range(0, len(name_list)):
+        fileFunc.add_json(name_list[elm], level_list[elm], components_list[elm], spell_resistance_list[elm])
+
+        if not elm == len(name_list)-1:
+            fileFunc.add(",\n", 'data/spells.json')
+
+    fileFunc.add("\n]", 'data/spells.json')
+
+
+def verify_if_crawler_done():
+    if os.path.isfile("data/all_level") or os.path.isfile("data/all_components") or \
+            os.path.isfile("data/all_name_for_json") or  os.path.isfile("data/all_spell_resistance"):
+
+        print("All spells are already downloaded !")
+        print("Remove : \'data/all_level\' AND \'data/all_components\' AND \'data/all_name_for_json\' "
+              "AND \'data/all_spell_resistance\' to re-download all spells details")
+        print()
+
+        return True
+
+    else:
+        return False
+
+
+def mono_thread_crawler(browser):
+    if verify_if_crawler_done():
+        return
 
     crawler(fileFunc.get_url_list(), fileFunc.get_name_list(), get_driver(browser))
 
 
-def multi_thread_crawler(nb_thread=4):
+def multi_thread_crawler(browser, nb_thread=4):
+    if verify_if_crawler_done():
+        return
+
     url_list = fileFunc.get_url_list()
     name_list = fileFunc.get_name_list()
 
@@ -181,17 +232,16 @@ def multi_thread_crawler(nb_thread=4):
     inf = 0
     sup = div_result
 
-    browser = get_browser()
     threads_list = []
 
     for i in range(0, nb_thread):
         crawler_thread = threading.Thread(target=crawler,
-                                          args=(url_list[inf:sup], name_list[inf:sup], get_driver(browser)))
+                                          args=(url_list[inf:sup+1], name_list[inf:sup+1], get_driver(browser)))
         print("Thread ", i+1, " is ready")
         threads_list.append(crawler_thread)
 
         crawler_thread.start()
-        print("Thread ", i+1, " started for spells from ", inf+1, " to ", sup+1, "\n")
+        print("Thread ", i+1, " started for spells from ", inf, " to ", sup, "\n")
 
         inf = sup + 1
         sup += div_result
