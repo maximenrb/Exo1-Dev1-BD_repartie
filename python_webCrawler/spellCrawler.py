@@ -10,20 +10,23 @@ from python_webCrawler.driverPath import get_driver
 from python_webCrawler.driverPath import get_browser
 
 
+global_lock = threading.Lock()
+
+
 def home_crawler():
     # Initiate web driver
     browser = get_browser()
     web_driver = get_driver(browser)
 
     # Go to web page
-    web_driver.get('https://aonprd.com/Spells.aspx?Class=Wizard')
+    web_driver.get('https://aonprd.com/Spells.aspx?Class=All')
 
     # Get all "a" divs with href field starting by 'SpellDisplay..."
     spells = web_driver.find_elements_by_xpath("//a[contains(@href, 'SpellDisplay')]")
 
     for spell in spells:
         # Remove "M", "FMR" or "V" links
-        if len(spell.text) > 2 and not str(spell.text) == "FMR":
+        if len(spell.text) > 2 and not str(spell.text) == "FMR" and not str(spell.text) == "FRT":
 
             # Get the link of the current div
             link = str(spell.get_attribute("href"))
@@ -33,18 +36,27 @@ def home_crawler():
             short_link = link[link.find("=")+1:]
 
             # Save links in file
-            # fileFunc.add_url(short_link)
-            # fileFunc.add_name(spell.text)
+            fileFunc.add_url(short_link)
+            fileFunc.add_name(spell.text)
 
 
 def get_level(span_div_html, start_find_index):
+    level = ""
+
     # Get information from div
-    wizard_pos = span_div_html.find("wizard", start_find_index) + 6
-    h3_pos = span_div_html.find("<h3", wizard_pos)
-    wizard_level = str(span_div_html[wizard_pos:h3_pos]).strip()
+    level_pos = span_div_html.find("<b>Level</b>", start_find_index)
+
+    if level_pos > 0:
+        level_pos += 12
+        h3_pos = span_div_html.find("<h3", level_pos)
+        level = str(span_div_html[level_pos:h3_pos]).strip()
+
+        if level.rfind(")")+1 == len(level):
+            level = level[:level.rfind("(")]
+            level = level.strip()
 
     # Return only the first element of the string to avoid error (because level is a digit)
-    return wizard_level[:1]
+    return level
 
 
 def get_components(span_div_html, start_find_index):
@@ -131,18 +143,26 @@ def crawler(url_list, name_list, web_driver):
                 # Search and use this index because one page can regroup different spells
                 start_find_index = span_div_html.find(name_list[actual_link])
 
-                wizard_level = get_level(span_div_html, start_find_index)
+                level = get_level(span_div_html, start_find_index)
                 components_list = get_components(span_div_html, start_find_index)
                 spell_resistance = get_spell_resistance(span_div_html, start_find_index)
 
                 # spells.append(SpellObject(name_list[actual_link], wizard_level, components_list, spell_resistance))
 
-                # fileFunc.add_level(str(wizard_level))
+                while global_lock.locked():
+                    continue
+
+                global_lock.acquire()
+
+                # fileFunc.add_level(str(level))
                 # fileFunc.add_components(str(components_list).strip('[]'))
                 # fileFunc.add_spell_resistance(str(spell_resistance))
+                fileFunc.add_json(name_list[actual_link], level, components_list, spell_resistance)
 
-                print("Name: ", name_list[actual_link], " | Level: ", wizard_level, " | Components: ", components_list,
+                print("Name: ", name_list[actual_link], " | Level: ", level, " | Components: ", components_list,
                       " | Spell Resistance: ", spell_resistance, " | ", actual_link, "/", nb_links-1)
+
+                global_lock.release()
 
 
 def mono_thread_crawler():
