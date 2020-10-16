@@ -64,11 +64,9 @@ def get_driver(user_browser):
 def get_browser():
     user_browser = ""
 
-    print("You are running on " + platform.system() + " " + platform.release())
+    print("You are running on ", platform.system(), platform.release())
     while not user_browser == "1" and not user_browser == "2":
-        print("Choose your browser:")
-        print("  1. Chrome")
-        print("  2. Firefox")
+        print("Choose your browser:\n\t1. Chrome\n\t2. Firefox")
 
         user_browser = input("> ")
         print("")

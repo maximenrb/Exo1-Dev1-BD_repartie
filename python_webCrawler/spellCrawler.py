@@ -187,12 +187,11 @@ def multi_thread_crawler(nb_thread=4):
     for i in range(0, nb_thread):
         crawler_thread = threading.Thread(target=crawler,
                                           args=(url_list[inf:sup], name_list[inf:sup], get_driver(browser)))
-        print("Thread " + str(i+1) + " is ready")
+        print("Thread ", i+1, " is ready")
         threads_list.append(crawler_thread)
 
         crawler_thread.start()
-        print("Thread " + str(i+1) + " started for range from ", inf, " to ", sup)
-        print("")
+        print("Thread ", i+1, " started for spells from ", inf+1, " to ", sup+1, "\n")
 
         inf = sup + 1
         sup += div_result
@@ -204,5 +203,4 @@ def multi_thread_crawler(nb_thread=4):
         # Wait until thread terminates its task
         thread.join()
 
-    print("")
-    print("All threads completed")
+    print("\nAll threads completed")
